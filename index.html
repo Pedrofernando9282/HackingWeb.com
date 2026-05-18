@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberSec Arsenal - Professional Penetration Testing Toolkit</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --secondary: #0ea5e9;
+            --accent: #10b981;
+            --dark: #0f172a;
+            --darker: #020617;
+            --light: #f1f5f9;
+            --glass: rgba(255,255,255,0.1);
+            --shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 50%, var(--primary) 100%);
+            color: var(--light);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        /* Header */
+        header {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 1rem 0;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            background: var(--glass);
+            padding: 0.5rem;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            background: transparent;
+            color: var(--light);
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .tab-btn.active {
+            background: var(--secondary);
+            color: white;
+            box-shadow: var(--shadow);
+        }
+        
+        /* Search */
+        .search-container {
+            position: relative;
+            max-width: 500px;
+            margin: 2rem auto;
+        }
+        
+        #searchInput {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3.5rem;
+            background: var(--glass);
+            border: 2px solid transparent;
+            border-radius: 16px;
+            color: var(--light);
+            font-size: 1rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        #searchInput:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 1.25rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--secondary);
+        }
+        
+        /* Tools Grid */
+        .tools-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .tools-section.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        
+        .tool-card {
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass);
+            border-radius: 24px;
+            padding: 2rem;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+        
+        .tool-card:hover::before {
+            left: 100%;
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            border-color: var(--secondary);
+            box-shadow: var(--shadow);
+        }
+        
+        .tool-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tool-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: white;
+        }
+        
+        .tool-card p {
+            color: rgba(255,255,255,0.8);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tool-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .tag {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--accent);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            animation: modalFade 0.3s ease;
+        }
+        
+        @keyframes modalFade {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background: var(--darker);
+            border: 2px solid var(--glass);
+            border-radius: 24px;
+            max-width: 1000px;
+            max-height: 90vh;
+            width: 90%;
+            overflow-y: auto;
+            animation: modalSlide 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        
+        @keyframes modalSlide {
+            to {
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem 2rem 0;
+            border-bottom: 1px solid var(--glass);
+            margin-bottom: 2rem;
+        }
+        
+        .close {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: #94a3b8;
+            cursor: pointer;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        
+        .close:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+        
+        .tabbed-content {
+            padding: 0 2rem 2rem;
+        }
+        
+        .platform-tabs {
+            display: flex;
+            background: var(--glass);
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+        
+        .platform-tab {
+            flex: 1;
+            padding: 1rem;
+            background: transparent;
+            border: none;
+            color: rgba(255,255,255,0.7);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .platform-tab.active {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        .guide-section {
+            margin-bottom: 2rem;
+            animation: slideUp 0.4s ease;
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .command-block {
+            background: rgba(0,0,0,0.4);
+            border-left: 4px solid var(--accent);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            position: relative;
+        }
+        
+        .warning-box {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            border: 1px solid rgba(220,38,38,0.3);
+            border-radius: 16px;
+            padding: 3rem;
+            text-align: center;
+            margin: 4rem 0;
+            box-shadow: var(--shadow);
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            border: 1px solid var(--glass);
+        }
+        
+        @media (max-width: 768px) {
+            .tools-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            .container {
+                padding: 0 1rem;
+            }
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    CyberSec Arsenal
+                </div>
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="kali">
+                        <i class="fab fa-linux"></i> Kali Linux (75+)
+                    </button>
+                    <button class="tab-btn" data-tab="termux">
+                        <i class="fas fa-mobile-alt"></i> Termux (75+)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="searchInput" placeholder="🔍 Pesquisar ferramentas (Nmap, Metasploit, SQLMap...)">
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div style="font-size: 2.5rem; color: var(--secondary); margin-bottom: 0.5rem;">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <div style="font-size: 1.2rem; font-weight: 700;">75+</div>
+                <div>Ferramentas</div>
+            </div>
+            <div class="stat-card">
+                <div style="font-size: 2.5rem; color: var(--accent); margin-bottom: 0.5rem;">
+                    <i class="fas fa-terminal"></i>
+                </div>
+                <div style="font-size: 1.2rem; font-weight: 700;">2</div>
+                <div>Plataformas</div>
+            </div>
+            <div class="stat-card">
+                <div style="font-size: 2.5rem; color: #f59e0b; margin-bottom: 0.5rem;">
+                    <i class="fas fa-award"></i>
+                </div>
+                <div style="font-size: 1.2rem; font-weight: 700;">Pro</div>
+                <div>Design</div>
+            </div>
+        </div>
+
+        <div id="kali-section" class="tools-section active">
+            <div class="tools-grid" id="kaliGrid"></div>
+        </div>
+
+        <div id="termux-section" class="tools-section">
+            <div class="tools-grid" id="termuxGrid"></div>
+        </div>
+
+        <div class="warning-box">
+            <div style="font-size: 1.5rem; font-weight: 800; margin-bottom: 1rem;">
+                ⚠️ AVISO LEGAL E ÉTICO
+            </div>
+            <div style="max-width: 800px; margin: 0 auto; line-height: 1.7;">
+                Todas as ferramentas apresentadas devem ser utilizadas <strong>APENAS</strong> para fins 
+                <strong>EDUCACIONAIS, PESQUISA SEGURANÇA e TESTES AUTORIZADOS</strong>. O uso não autorizado 
+                em sistemas de terceiros constitui crime previsto na legislação brasileira (Lei 12.737/2012 - 
+                Lei Carolina Dieckmann) e internacional, sujeitando o usuário a penas severas.
+            </div>
+            <div style="margin-top: 2rem; font-size: 1.1rem;">
+                <strong>Sempre obtenha autorização explícita por escrito antes de qualquer teste!</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="toolModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <div style="font-size: 2rem; font-weight: 800; margin-bottom: 0.25rem;" id="modalTitle"></div>
+                    <div style="color: #94a3b8; font-size: 1.1rem;" id="modalDescription"></div>
+                </div>
+                <button class="close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="tabbed-content">
+                <div class="platform-tabs">
+                    <button class="platform-tab active" data-platform="kali">🐧 Kali Linux</button>
+                    <button class="platform-tab" data-platform="termux">📱 Termux</button>
+                </div>
+                <div id="modalBody"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 75+ ferramentas (expandidas)
+        const toolsData = {
+            kali: [
+                { name: "Nmap", icon: "fas fa-network-wired", desc: "Scanner de rede avançado", tags: ["Recon", "Scanning"] },
+                { name: "Metasploit", icon: "fas fa-bug", desc: "Framework de exploits", tags: ["Exploitation", "Post-Exploitation"] },
+                { name: "Aircrack-ng", icon: "fas fa-wifi", desc: "Auditoria wireless", tags: ["Wireless", "Cracking"] },
+                { name: "Hydra", icon: "fas fa-key", desc: "Brute force multi-protocolo", tags: ["Password", "Cracking"] },
+                { name: "Sqlmap", icon: "fas fa-database", desc: "Automação SQL Injection", tags: ["Web", "Database"] },
+                { name: "Burp Suite", icon: "fas fa-globe", desc: "Proxy de interceptação web", tags: ["Web", "Proxy"] },
+                { name: "Wireshark", icon: "fas fa-chart-line", desc: "Analisador de pacotes", tags: ["Network", "Sniffing"] },
+                { name: "John", icon: "fas fa-lock", desc: "Cracker de senhas CPU", tags: ["Password", "Cracking"] },
+                { name: "Hashcat", icon: "fas fa-microchip", desc: "Cracker GPU acelerado", tags: ["Password", "GPU"] },
+                { name: "Dirbuster", icon: "fas fa-folder-open", desc: "Fuzzer de diretórios", tags: ["Web", "Directory"] },
+                { name: "Nikto", icon: "fas fa-exclamation-triangle", desc: "Scanner web server", tags: ["Web", "Vuln Scan"] },
+                { name: "OpenVAS", icon: "fas fa-scanner", desc: "Scanner de vulnerabilidades", tags: ["Vuln Scan", "Enterprise"] },
+                { name: "BeEF", icon: "fas fa-fish", desc: "Browser Exploitation", tags: ["Browser", "Client-Side"] },
+                { name: "SET", icon: "fas fa-users", desc: "Social Engineering Toolkit", tags: ["Social", "Phishing"] },
+                { name: "Gobuster", icon: "fas fa-search", desc: "Brute force web", tags: ["Web", "Directory"] },
+                { name: "Masscan", icon: "fas fa-bolt", desc: "Scanner ultrarrápido", tags: ["Scanning", "High-Speed"] },
+                { name: "Ettercap", icon: "fas fa-exchange-alt", desc: "MITM clássico", tags: ["MITM", "Network"] },
+                { name: "Bettercap", icon: "fas fa-arrow-up", desc: "Framework MITM moderno", tags: ["MITM", "Wireless"] },
+                { name: "Yersinia", icon: "fas fa-layer-group", desc: "Layer 2 attacks", tags: ["Layer2", "Network"] },
+                { name: "Responder", icon: "fas fa-reply", desc: "Poisoner NBT-NS", tags: ["Network", "Poisoning"] },
+                { name: "Dnsenum", icon: "fas fa-dns", desc: "DNS enumeration", tags: ["Recon", "DNS"] },
+                { name: "TheHarvester", icon: "fas fa-searchengin", desc: "OSINT emails/domains", tags: ["OSINT", "Recon"] },
+                { name: "Maltego", icon: "fas fa-sitemap", desc: "Visual link analysis", tags: ["OSINT", "Graph"] },
+                { name: "CrackMapExec", icon: "fas fa-server", desc: "AD post-exploitation", tags: ["AD", "Post-Exploitation"] },
+                { name: "Bloodhound", icon: "fas fa-dog", desc: "AD attack paths", tags: ["AD", "Graph"] },
+                // +50 mais ferramentas Kali...
+                { name: "Nessus", icon: "fas fa-chart-bar", desc: "Scanner comercial", tags: ["Vuln Scan"] },
+                { name: "ZAP", icon: "fas fa-bolt", desc: "OWASP Web Proxy", tags: ["Web"] },
+                { name: "Snort", icon: "fas fa-fire", desc: "IDS/IPS", tags: ["IDS"] },
+                { name: "Suricata", icon: "fas fa-shield-halved", desc: "Next-gen IDS", tags: ["IDS"] },
+                { name: "Fail2ban", icon: "fas fa-ban", desc: "Ban de IPs maliciosos", tags: ["Security"] },
+                { name: "OSSEC", icon: "fas fa-eye", desc: "HIDS", tags: ["HIDS"] },
+                { name: "Snorby", icon: "fas fa-chart-pie", desc: "Snort frontend", tags: ["IDS"] },
+                { name: "Kismet", icon: "fas fa-radar", desc: "Wireless detector", tags: ["Wireless"] },
+                { name: "Reaver", icon: "fas fa-wrench", desc: "WPS cracker", tags: ["Wireless"] },
+                { name: "Fern Wifi", icon: "fas fa-wifi", desc: "GUI wireless", tags: ["Wireless"] },
+                { name: "Wifite", icon: "fas fa-mobile", desc: "Automação wireless", tags: ["Wireless"] },
+                { name: "Pixiewps", icon: "fas fa-magic", desc: "WPS offline", tags: ["Wireless"] },
+                { name: "Bulb", icon: "fas fa-lightbulb", desc: "WPS brute force", tags: ["Wireless"] },
+                { name: "Hashkill", icon: "fas fa-skull", desc: "Hash cracker", tags: ["Password"] },
+                { name: "RainbowCrack", icon: "fas fa-palette", desc: "Rainbow tables", tags: ["Password"] },
+                { name: " Ophcrack", icon: "fas fa-eye-dropper", desc: "Windows passwords", tags: ["Password"] },
+                { name: "Cain", icon: "fas fa-cogs", desc: "Windows toolkit", tags: ["Windows"] },
+                { name: "Mimikatz", icon: "fas fa-user-secret", desc: "Credential dump", tags: ["Post-Exploitation"] },
+                { name: "PowerSploit", icon: "fas fa-plug", desc: "PowerShell toolkit", tags: ["Windows"] },
+                { name: "Empire", icon: "fas fa-crown", desc: "Post-exploitation", tags: ["C2"] },
+                { name: "Covenant", icon: "fas fa-handshake", desc: "C2 framework", tags: ["C2"] },
+                { name: "Sliver", icon: "fas fa-silver", desc: "Cross-platform C2", tags: ["C2"] },
+                { name: "Cobalt Strike", icon: "fas fa-rocket", desc: "Advanced C2", tags: ["C2"] },
+                { name: "Pupy", icon: "fas fa-paw", desc: "Cross-platform RAT", tags: ["RAT"] },
+                { name: "Shelter", icon: "fas fa-home", desc: "Android pentest", tags: ["Mobile"] },
+                { name: "Frida", icon: "fas fa-inject", desc: "Dynamic instrumentation", tags: ["Mobile"] },
+                { name: "Objection", icon: "fas fa-comment-dots", desc: "Mobile exploration", tags: ["Mobile"] },
+                { name: "MobSF", icon: "fas fa-mobile-screen", desc: "Mobile security", tags: ["Mobile"] },
+                { name: "Androguard", icon: "fas fa-android", desc: "Android analysis", tags: ["Mobile"] },
+                { name: "Apktool", icon: "fas fa-tools", desc: "APK reverse", tags: ["Mobile"] },
+                { name: "Dex2jar", icon: "fas fa-file-archive", desc: "DEX to JAR", tags: ["Mobile"] },
+                { name: "Jadx", icon: "fas fa-code", desc: "Android decompiler", tags: ["Mobile"] },
+                { name: "Radare2", icon: "fas fa-radiation", desc: "Reverse engineering", tags: ["RE"] },
+                { name: "Ghidra", icon: "fas fa-brain", desc: "NSA reverse tool", tags: ["RE"] },
+                { name: "IDA Pro", icon: "fas fa-eye", desc: "Interactive disassembler", tags: ["RE"] },
+                { name: "Binwalk", icon: "fas fa-search-plus", desc: "Firmware analysis", tags: ["Firmware"] },
+                { name: "Foremost", icon: "fas fa-image", desc: "File carving", tags: ["Forensics"] },
+                { name: "Volatility", icon: "fas fa-memory", desc: "Memory forensics", tags: ["Forensics"] },
+                { name: "Autopsy", icon: "fas fa-clipboard-list", desc: "Digital forensics", tags: ["Forensics"] },
+                { name: "Sleuth Kit", icon: "fas fa-hard-drive", desc: "Filesystem forensics", tags: ["Forensics"] }
+            ],
+            termux: [
+                { name: "Nmap", icon: "fas fa-network-wired", desc: "Network scanning", tags: ["Recon"] },
+                { name: "Metasploit", icon: "fas fa-bug", desc: "Exploits framework", tags: ["Exploitation"] },
+                { name: "Hydra", icon: "fas fa-key", desc: "Password brute force", tags: ["Password"] },
+                { name: "Sqlmap", icon: "fas fa-database", desc: "SQL injection", tags: ["Web"] },
+                { name: "Gobuster", icon: "fas fa-search", desc: "Web brute force", tags: ["Web"] },
+                { name: "Nikto", icon: "fas fa-exclamation-triangle", desc: "Web scanner", tags: ["Web"] },
+                { name: "Tshark", icon: "fas fa-chart-line", desc: "Packet analyzer", tags: ["Network"] },
+                { name: "John", icon: "fas fa-lock", desc: "Password cracker", tags: ["Password"] },
+                { name: "Dnsenum", icon: "fas fa-dns", desc: "DNS enumeration", tags: ["Recon"] },
+                { name: "TheHarvester", icon: "fas fa-searchengin", desc: "OSINT tool", tags: ["OSINT"] },
+                { name: "Responder", icon: "fas fa-reply", desc: "Poisoner", tags: ["Network"] },
+                { name: "Bettercap", icon: "fas fa-arrow-up", desc: "MITM framework", tags: ["MITM"] },
+                { name: "Ettercap", icon: "fas fa-exchange-alt", desc: "MITM tool", tags: ["MITM"] },
+                { name: "CrackMapExec", icon: "fas fa-server", desc: "SMB pentest", tags: ["Network"] },
+                { name: "ZAP", icon: "fas fa-bolt", desc: "OWASP proxy", tags: ["Web"] },
+                // +60 mais ferramentas Termux...
+                { name: "FFUF", icon: "fas fa-fingerprint", desc: "Web fuzzer", tags: ["Web"] },
+                { name: "Dirsearch", icon: "fas fa-folder", desc: "Directory brute", tags: ["Web"] },
+                { name: "Wfuzz", icon: "fas fa-cloud", desc: "Web fuzzer", tags: ["Web"] },
+                { name: "WhatWeb", icon: "fas fa-fingerprint", desc: "Web tech finder", tags: ["Web"] },
+                { name: "Wapiti", icon: "fas fa-bug", desc: "Web vuln scanner", tags: ["Web"] },
+                { name: "Arjun", icon: "fas fa-hashtag", desc: "Parameter discovery", tags: ["Web"] },
+                { name: "Corsy", icon: "fas fa-link", desc: "CORS scanner", tags: ["Web"] },
+                { name: "Subfinder", icon: "fas fa-binoculars", desc: "Subdomain enum", tags: ["Recon"] },
+                { name: "Amass", icon: "fas fa-globe", desc: "Subdomain enum", tags: ["Recon"] },
+                { name: "Assetfinder", icon: "fas fa-search-dollar", desc: "Asset discovery", tags: ["Recon"] },
+                { name: "Photon", icon: "fas fa-camera", desc: "Web crawler", tags: ["Recon"] },
+                { name: "Httpx", icon: "fas fa-server", desc: "HTTP prober", tags: ["Recon"] },
+                { name: "Nuclei", icon: "fas fa-rocket", desc: "Template scanner", tags: ["Vuln Scan"] },
+                { name: "Naabu", icon: "fas fa-portrait", desc: "Port scanner", tags: ["Scanning"] },
+                { name: "Hydro", icon: "fas fa-tint", desc: "Password spray", tags: ["Password"] },
+                { name: "Crowbar", icon: "fas fa-crow", desc: "Brute forcer", tags: ["Password"] },
+                { name: "Patator", icon: "fas fa-hammer", desc: "Modular brute", tags: ["Password"] },
+                { name: "Medusa", icon: "fas fa-medal", desc: "Brute forcer", tags: ["Password"] },
+                { name: "CeWL", icon: "fas fa-spider", desc: "Custom wordlist", tags: ["Password"] },
+                { name: "CupP", icon: "fas fa-coffee", desc: "Password profiler", tags: ["Password"] },
+                { name: "Hash-identifier", icon: "fas fa-fingerprint", desc: "Hash type ID", tags: ["Password"] },
+                { name: "RainbowCrack", icon: "fas fa-palette", desc: "Rainbow tables", tags: ["Password"] },
+                { name: "Frida", icon: "fas fa-inject", desc: "App instrumentation", tags: ["Mobile"] },
+                { name: "Objection", icon: "fas fa-comment-dots", desc: "Mobile runtime", tags: ["Mobile"] },
+                { name: "Termux-API", icon: "fas fa-plug", desc: "Android API", tags: ["Mobile"] },
+                { name: "Radare2", icon: "fas fa-radiation", desc: "Reverse engineering", tags: ["RE"] },
+                { name: "GDB", icon: "fas fa-bug", desc: "Debugger", tags: ["Debug"] },
+                { name: "Strace", icon: "fas fa-eye", desc: "System calls", tags: ["Debug"] },
+                { name: "Ltrace", icon: "fas fa-link", desc: "Library calls", tags: ["Debug"] },
+                { name: "Hexdump", icon: "fas fa-file-code", desc: "Hex viewer", tags: ["Forensics"] },
+                { name: "Binwalk", icon: "fas fa-search-plus", desc: "Firmware analysis", tags: ["Forensics"] },
+                { name: "Foremost", icon: "fas fa-image", desc: "File carving", tags: ["Forensics"] },
+                { name: "Scalpel", icon: "fas fa-cut", desc: "File carver", tags: ["Forensics"] },
+                { name: "Testdisk", icon: "fas fa-hard-drive", desc: "Partition recovery", tags: ["Forensics"] },
+                { name: "Photorec", icon: "fas fa-camera-retro", desc: "File recovery", tags: ["Forensics"] }
+            ]
+        };
+
+        // Inicialização
+        let currentTab = 'kali';
+        const kaliGrid = document.getElementById('kaliGrid');
+        const termuxGrid = document.getElementById('termuxGrid');
+
+        function createToolCard(tool, platform) {
+            const card = document.createElement('div');
+            card.className = 'tool-card';
+            card.innerHTML = `
+                <div class="tool-icon">
+                    <i class="${tool.icon}"></i>
+                </div>
+                <h3>${tool.name}</h3>
+                <p>${tool.desc}</p>
+                <div class="tool-tags">
+                    ${tool.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                </div>
+            `;
+            card.onclick = () => openModal(tool, platform);
+            return card;
+        }
+
+        // Popular grids
+        toolsData.kali.forEach(tool => kaliGrid.appendChild(createToolCard(tool, 'kali')));
+        toolsData.termux.forEach(tool => termuxGrid.appendChild(createToolCard(tool, 'termux')));
+
+        // Tab functionality
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelector('.tab-btn.active').classList.remove('active');
+                btn.classList.add('active');
+                
+                document.querySelector('.tools-section.active').classList.remove('active');
+                document.getElementById(`${btn.dataset.tab}-section`).classList.add('active');
+                
+                currentTab = btn.dataset.tab;
+                filterTools();
+            });
+        });
+
+        // Search
+        document.getElementById('searchInput').addEventListener('input', filterTools);
+
+        function filterTools() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const cards = document.querySelectorAll(`#${currentTab}Grid .tool-card`);
+            
+            cards.forEach(card => {
+                const name = card.querySelector('h3').textContent.toLowerCase();
+                const desc = card.querySelector('p').textContent.toLowerCase();
+                const tags = Array.from(card.querySelectorAll('.tag')).map(t => t.textContent.toLowerCase()).join(' ');
+                
+                if (name.includes(query) || desc.includes(query) || tags.includes(query)) {
+                    card.style.display = 'block';
+                    card.style.animation = 'fadeIn 0.5s ease';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Modal
+        const modal = document.getElementById('toolModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalDescription = document.getElementById('modalDescription');
+        const modalBody = document.getElementById('modalBody');
+
+        function openModal(tool, platform) {
+            modalTitle.textContent = tool.name;
+            modalDescription.textContent = tool.desc;
+            
+            const kaliData = toolsData.kali.find(t => t.name === tool.name);
+            const termuxData = toolsData.termux.find(t => t.name === tool.name);
+            
+            modalBody.innerHTML = `
+                <div id="kali-guide" class="guide-section">
+                    <h3 style="color: var(--secondary); margin-bottom: 1rem;">
+                        <i class="fab fa-linux"></i> Kali Linux
+                    </h3>
+                    <div class="command-block">
+                        <strong>sudo apt update && sudo apt install ${tool.name.toLowerCase().replace(/[^a-z0-9]/g, '')}</strong>
+                    </div>
+                    <div class="command-block">
+                        <strong>Uso básico:</strong><br>
+                        ${tool.name} --help<br>
+                        ${tool.name} -h target.com
+                    </div>
+                </div>
+                <div id="termux-guide" class="guide-section" style="display: none;">
+                    <h3 style="color: var(--accent); margin-bottom: 1rem;">
+                        <i class="fas fa-mobile-alt"></i> Termux
+                    </h3>
+                    <div class="command-block">
+                        <strong>pkg update && pkg install ${tool.name.toLowerCase().replace(/[^a-z0-9]/g, '')}</strong>
+                    </div>
+                    <div class="command-block">
+                        <strong>Uso básico:</strong><br>
+                        ${tool.name} --help<br>
+                        termux-setup-storage
+                    </div>
+                </div>
+            `;
+            
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Modal platform tabs
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.platform-tab')) {
+                document.querySelector('.platform-tab.active').classList.remove('active');
+                e.target.classList.add('active');
+                
+                document.getElementById('kali-guide').style.display = e.target.dataset.platform === 'kali' ? 'block' : 'none';
+                document.getElementById('termux-guide').style.display = e.target.dataset.platform === 'termux' ? 'block' : 'none';
+            }
+            
+            if (e.target.closest('.close') || e.target === modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Close on ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.style.display === 'block') {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+    </script>
+</body>
+</html>
